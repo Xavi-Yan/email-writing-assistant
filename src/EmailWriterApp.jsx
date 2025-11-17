@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Send, Copy, Check, ArrowRight } from 'lucide-react';
+import { Copy, Check, ArrowRight } from 'lucide-react';
 import { TRANSLATIONS } from './translations';
 import { TONE_OPTIONS } from './constants';
 import { initializeClaudeAPI } from './api';
