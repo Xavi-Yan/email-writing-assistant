@@ -1,46 +1,107 @@
-# Getting Started with Create React App
+# Email Writing Assistant - File Structure
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This React application has been separated into modular files for better maintainability and readability.
 
-## Available Scripts
+## File Structure
 
-In the project directory, you can run:
+```
+├── EmailWriterApp.jsx    # Main React component with logic and JSX
+├── translations.js       # All language translations
+├── constants.js          # Configuration constants and tone options
+├── styles.css           # All CSS styling
+└── README.md            # This file
+```
 
-### `npm start`
+## File Descriptions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### EmailWriterApp.jsx
+The main React component file containing:
+- React hooks for state management
+- Business logic (email generation, copy to clipboard, keyboard shortcuts)
+- JSX structure (HTML-like markup)
+- Component lifecycle methods
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+**Key Functions:**
+- `generateEmail()` - Calls the Claude API to generate emails
+- `copyToClipboard()` - Copies generated email to clipboard
+- `handleKeyPress()` - Handles keyboard shortcuts (Cmd/Ctrl + Enter)
+- `findMatchingLocale()` - Determines the user's language preference
+- `t()` - Translation helper function
 
-### `npm test`
+### translations.js
+Contains all user-facing text in multiple languages:
+- English (en-US) - Default language
+- Spanish (es-ES) - Secondary language
+- Easily extensible for additional languages
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Adding a new language:**
+```javascript
+"fr-FR": {
+  "emailWritingAssistant": "Assistant de Rédaction d'Emails",
+  // ... add all translation keys
+}
+```
 
-### `npm run build`
+### constants.js
+Configuration values and static data:
+- `TONE_OPTIONS` - Available email tone options
+- `MAX_THOUGHTS_LENGTH` - Maximum character limit for user input
+- `MAX_CONTEXT_LENGTH` - Maximum character limit for context
+- `COPY_FEEDBACK_DURATION` - How long "Copied!" message shows
+- `API_TIMEOUT` - API request timeout duration
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### styles.css
+All styling separated by section:
+- **Base Layout** - Container and grid system
+- **Header** - App title and description styling
+- **Cards** - Card components and layouts
+- **Buttons** - All button styles and states
+- **Textareas** - Input field styling
+- **Tone Selection** - Tone button grid
+- **Email Output** - Generated email display
+- **Empty State** - Placeholder when no email generated
+- **Tips Card** - Pro tips section
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## How It Works Together
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. **Component renders** using JSX from `EmailWriterApp.jsx`
+2. **Styles applied** from `styles.css` using CSS class names
+3. **Text displayed** using the `t()` function that pulls from `translations.js`
+4. **Configuration** loaded from `constants.js` (tone options, limits, etc.)
+5. **User interaction** triggers state changes and API calls
+6. **Email generation** uses the Claude API via `window.claude.complete()`
 
-### `npm run eject`
+## Dependencies
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### External Libraries
+- `react` - Core React library
+- `lucide-react` - Icon library (Mail, Send, Copy, etc.)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Browser APIs
+- `navigator.clipboard` - For copy functionality
+- `navigator.languages` - For locale detection
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Custom APIs
+- `window.claude.complete()` - Claude AI API (needs to be implemented)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Usage
 
-## Learn More
+To use this component in your application:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```jsx
+import EmailWriterApp from './EmailWriterApp';
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+function App() {
+  return <EmailWriterApp />;
+}
+```
+
+## Next Steps
+
+1. **Implement `window.claude.complete()` API**
+2. Add input validation (character limits)
+3. Add error handling improvements
+4. Add loading timeouts
+5. Consider adding localStorage for draft saving
+6. Add more language translations
+7. Implement accessibility improvements (ARIA labels)
