@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Send, Copy, Check, Mail, Sparkles, MessageSquare, User } from 'lucide-react';
+import { Send, Copy, Check, ArrowRight } from 'lucide-react';
 import { TRANSLATIONS } from './translations';
 import { TONE_OPTIONS } from './constants';
 import { initializeClaudeAPI } from './api';
@@ -94,192 +94,149 @@ Respond with ONLY the email body content. Do not include any explanations or add
 
     return (
         <div className="app-container">
-            {/* Header */}
-            <header className="app-header">
-                <div className="header-background"></div>
-                <div className="header-content">
-                    <div className="header-text-center">
-                        <div className="header-icon-wrapper">
-                            <Mail className="header-icon" />
-                        </div>
-                        <h1 className="header-title">
-                            {t('emailWritingAssistant')}
-                        </h1>
-                        <p className="header-subtitle">
-                            {t('transformThoughtsDescription')}
+            <div className="app-wrapper">
+
+                {/* Header */}
+                <header className="header">
+                    <h1 className="title">{t('emailWritingAssistant')}</h1>
+                    <p className="subtitle">{t('transformThoughtsDescription')}</p>
+                </header>
+
+                {/* Main Form */}
+                <main className="main">
+
+                    {/* Thoughts Input */}
+                    <div className="field">
+                        <label className="label">{t('yourThoughts')}</label>
+                        <p className="field-description">
+                            Type your ideas, key points, or rough draft here. Don't worry about perfect grammar or structure - just jot down what you want to communicate.
                         </p>
+                        <textarea
+                            value={rawThoughts}
+                            onChange={(e) => setRawThoughts(e.target.value)}
+                            onKeyDown={handleKeyPress}
+                            placeholder={t('thoughtsPlaceholder')}
+                            className="textarea"
+                            rows={6}
+                        />
                     </div>
-                </div>
-            </header>
 
-            {/* Main Content */}
-            <main className="main-content">
-                <div className="content-grid">
-
-                    {/* Input Section */}
-                    <div className="input-section">
-                        {/* Thoughts Input */}
-                        <div className="card">
-                            <div className="card-header">
-                                <div className="icon-wrapper icon-wrapper-blue">
-                                    <MessageSquare className="icon" />
-                                </div>
-                                <h2 className="card-title">{t('yourThoughts')}</h2>
-                            </div>
-
-                            <textarea
-                                value={rawThoughts}
-                                onChange={(e) => setRawThoughts(e.target.value)}
-                                onKeyDown={handleKeyPress}
-                                placeholder={t('thoughtsPlaceholder')}
-                                className="thoughts-textarea"
-                            />
-
-                            <div className="tip-text">
-                                {t('tipKeyboardShortcut')}
-                            </div>
-                        </div>
-
-                        {/* Tone Selection */}
-                        <div className="card">
-                            <div className="card-header">
-                                <div className="icon-wrapper icon-wrapper-indigo">
-                                    <Sparkles className="icon" />
-                                </div>
-                                <h2 className="card-title">{t('emailTone')}</h2>
-                            </div>
-
-                            <div className="tone-grid">
-                                {tones.map((toneOption) => (
-                                    <button
-                                        key={toneOption.value}
-                                        onClick={() => setTone(toneOption.value)}
-                                        className={`tone-button ${tone === toneOption.value ? 'tone-button-active' : ''}`}
-                                    >
-                                        <div className="tone-label">{toneOption.label}</div>
-                                        <div className="tone-description">{toneOption.description}</div>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Context Email Section */}
-                        <div className="card">
-                            <div className="card-header-between">
-                                <div className="card-header">
-                                    <div className="icon-wrapper icon-wrapper-slate">
-                                        <User className="icon" />
-                                    </div>
-                                    <h2 className="card-title">{t('contextOptional')}</h2>
-                                </div>
+                    {/* Tone Selection */}
+                    <div className="field">
+                        <label className="label">{t('emailTone')}</label>
+                        <p className="field-description">
+                            Choose the tone that matches your relationship with the recipient and the purpose of your email. This will shape the language and formality level.
+                        </p>
+                        <div className="tone-options">
+                            {tones.map((toneOption) => (
                                 <button
-                                    onClick={() => setShowContext(!showContext)}
-                                    className="toggle-button"
+                                    key={toneOption.value}
+                                    onClick={() => setTone(toneOption.value)}
+                                    className={`tone-option ${tone === toneOption.value ? 'active' : ''}`}
                                 >
-                                    {showContext ? t('hide') : t('show')}
+                                    {toneOption.label}
                                 </button>
-                            </div>
-
-                            {showContext && (
-                                <>
-                                    <p className="context-description">
-                                        {t('contextDescription')}
-                                    </p>
-                                    <textarea
-                                        value={contextEmail}
-                                        onChange={(e) => setContextEmail(e.target.value)}
-                                        placeholder={t('contextPlaceholder')}
-                                        className="context-textarea"
-                                    />
-                                </>
-                            )}
+                            ))}
                         </div>
-
-                        {/* Generate Button */}
-                        <button
-                            onClick={generateEmail}
-                            disabled={isLoading || !rawThoughts.trim()}
-                            className="generate-button"
-                        >
-                            {isLoading ? (
-                                <>
-                                    <div className="spinner"></div>
-                                    {t('craftingEmail')}
-                                </>
-                            ) : (
-                                <>
-                                    <Send className="button-icon" />
-                                    {t('generateEmail')}
-                                </>
-                            )}
-                        </button>
                     </div>
 
-                    {/* Output Section */}
-                    <div className="output-section">
-                        <div className="card output-card">
-                            <div className="card-header-between">
-                                <div className="card-header">
-                                    <div className="icon-wrapper icon-wrapper-green">
-                                        <Mail className="icon" />
-                                    </div>
-                                    <h2 className="card-title">{t('generatedEmail')}</h2>
+                    {/* Context (Optional) */}
+                    <div className="field">
+                        <div className="label-row">
+                            <label className="label">{t('contextOptional')}</label>
+                            <button
+                                onClick={() => setShowContext(!showContext)}
+                                className="toggle-link"
+                            >
+                                {showContext ? t('hide') : t('show')}
+                            </button>
+                        </div>
+                        <p className="field-description">
+                            If you're replying to an email, paste it here for better context. This helps generate a more relevant and accurate response.
+                        </p>
+                        {showContext && (
+                            <textarea
+                                value={contextEmail}
+                                onChange={(e) => setContextEmail(e.target.value)}
+                                placeholder={t('contextPlaceholder')}
+                                className="textarea"
+                                rows={4}
+                            />
+                        )}
+                    </div>
+
+                    {/* Generate Button */}
+                    <button
+                        onClick={generateEmail}
+                        disabled={isLoading || !rawThoughts.trim()}
+                        className="btn-primary"
+                    >
+                        {isLoading ? (
+                            <>
+                                <div className="spinner"></div>
+                                <span>{t('craftingEmail')}</span>
+                            </>
+                        ) : (
+                            <>
+                                <span>{t('generateEmail')}</span>
+                                <ArrowRight size={20} />
+                            </>
+                        )}
+                    </button>
+
+                    {/* Output */}
+                    {(generatedEmail || error) && (
+                        <>
+                            <div className="divider"></div>
+
+                            <div className="field">
+                                <div className="label-row">
+                                    <label className="label">{t('generatedEmail')}</label>
+                                    {generatedEmail && (
+                                        <button
+                                            onClick={copyToClipboard}
+                                            className="btn-copy"
+                                        >
+                                            {copied ? (
+                                                <>
+                                                    <Check size={16} />
+                                                    <span>{t('copied')}</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Copy size={16} />
+                                                    <span>{t('copy')}</span>
+                                                </>
+                                            )}
+                                        </button>
+                                    )}
                                 </div>
+
+                                {error && (
+                                    <div className="error">
+                                        ❌ {error}
+                                    </div>
+                                )}
 
                                 {generatedEmail && (
-                                    <button
-                                        onClick={copyToClipboard}
-                                        className="copy-button"
-                                    >
-                                        {copied ? (
-                                            <>
-                                                <Check className="button-icon-success" />
-                                                {t('copied')}
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Copy className="button-icon-small" />
-                                                {t('copy')}
-                                            </>
-                                        )}
-                                    </button>
+                                    <div className="output">
+                                        {generatedEmail}
+                                    </div>
                                 )}
                             </div>
+                        </>
+                    )}
 
-                            {error && (
-                                <div className="error-message">
-                                    <p>❌ {error}</p>
-                                </div>
-                            )}
+                </main>
 
-                            {generatedEmail ? (
-                                <div className="email-output">
-                  <pre className="email-text">
-                    {generatedEmail}
-                  </pre>
-                                </div>
-                            ) : (
-                                <div className="empty-state">
-                                    <Mail className="empty-state-icon" />
-                                    <p className="empty-state-text">{t('emailWillAppearHere')}</p>
-                                    <p className="empty-state-subtext">{t('getStartedPrompt')}</p>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Tips */}
-                        <div className="tips-card">
-                            <h3 className="tips-title">{t('proTips')}</h3>
-                            <ul className="tips-list">
-                                <li>{t('tipBeSpecific')}</li>
-                                <li>{t('tipIncludeDetails')}</li>
-                                <li>{t('tipTryTones')}</li>
-                                <li>{t('tipAddContext')}</li>
-                            </ul>
-                        </div>
+                {/* Footer */}
+                <footer className="footer">
+                    <div className="footer-text">
+                        Developed by <strong>XaviLab, LLC</strong>
                     </div>
-                </div>
-            </main>
+                </footer>
+
+            </div>
         </div>
     );
 }
